@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFM_Control", "DFM_Control\DFM_Control.csproj", "{70AFA3B3-8A7C-45A5-8156-2B27A160A299}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Photron_Dlls", "Photron_Dlls\Photron_Dlls.shproj", "{1E52FEB9-79F5-40B6-9626-46B5E8251BE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotronWrapper", "PhotronWrapper\PhotronWrapper.csproj", "{01B168B9-D0EB-4852-B43E-C5EEBB73A341}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{28C305F5-C9A6-4609-AD20-B0600EBE2E21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Photron_Tester", "Photron_Tester\Photron_Tester.csproj", "{80F0656A-9569-4BFA-9EC9-020CB7695C8F}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Photron_Dlls\Photron_Dlls.projitems*{01b168b9-d0eb-4852-b43e-c5eebb73a341}*SharedItemsImports = 4
+		Photron_Dlls\Photron_Dlls.projitems*{1e52feb9-79f5-40b6-9626-46b5e8251be9}*SharedItemsImports = 13
+		Photron_Dlls\Photron_Dlls.projitems*{70afa3b3-8a7c-45a5-8156-2b27a160a299}*SharedItemsImports = 4
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70AFA3B3-8A7C-45A5-8156-2B27A160A299}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70AFA3B3-8A7C-45A5-8156-2B27A160A299}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70AFA3B3-8A7C-45A5-8156-2B27A160A299}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70AFA3B3-8A7C-45A5-8156-2B27A160A299}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01B168B9-D0EB-4852-B43E-C5EEBB73A341}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01B168B9-D0EB-4852-B43E-C5EEBB73A341}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01B168B9-D0EB-4852-B43E-C5EEBB73A341}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01B168B9-D0EB-4852-B43E-C5EEBB73A341}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80F0656A-9569-4BFA-9EC9-020CB7695C8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80F0656A-9569-4BFA-9EC9-020CB7695C8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80F0656A-9569-4BFA-9EC9-020CB7695C8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80F0656A-9569-4BFA-9EC9-020CB7695C8F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1E52FEB9-79F5-40B6-9626-46B5E8251BE9} = {28C305F5-C9A6-4609-AD20-B0600EBE2E21}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4CDDA2A8-388A-4BAA-B7DB-232E97341F6F}
+	EndGlobalSection
+EndGlobal
