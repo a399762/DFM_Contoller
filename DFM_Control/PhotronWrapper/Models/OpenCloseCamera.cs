@@ -25,14 +25,16 @@ namespace PhotronWrapper.Models
         public OpenCloseCamera()
         {
         }
-
-        // Detect camera
-        public Result DetectCamera(String IPAdress, out string message)
+        
+        /// <summary>
+        /// Attempts to connect to a camera at a given IP address. 
+        /// </summary>
+        /// <param name="IPAdress"></param>
+        public void OpenCamera(String IPAdress)
         {
             //convert 
             UInt32 IPConverted = ToInt(IPAdress);
 
-            message = string.Empty;
             UInt32 ret;
             UInt32 errorCode;
 
@@ -48,8 +50,7 @@ namespace PhotronWrapper.Models
                     if (ret == 0)
                     {
                         ErrorCodes errorEnum = (ErrorCodes)errorCode;
-                        message = "PDC_Init " + errorEnum.ToString();
-                        return Result.Error;
+                        throw new Exception("PDC_Init: " + errorEnum);
                     }
                     isInit = true;
                 }
@@ -65,8 +66,7 @@ namespace PhotronWrapper.Models
                 if (ret == 0)
                 {
                     ErrorCodes errorEnum = (ErrorCodes)errorCode;
-                    message = "PDC_DetectDeviceLV " + errorEnum.ToString();
-                    return Result.Error;
+                    throw new Exception("PDC_DetectDeviceLV: " + errorEnum.ToString());
                 }
                 cancelTokenSource.Token.ThrowIfCancellationRequested();
 
@@ -75,8 +75,7 @@ namespace PhotronWrapper.Models
                 if (ret == 0)
                 {
                     ErrorCodes errorEnum = (ErrorCodes)errorCode;
-                    message = "PDC_OpenDeviceLV " + errorEnum.ToString();
-                    return Result.Error;
+                    throw new Exception("PDC_OpenDeviceLV: " + errorEnum.ToString());
                 }
                 isOpen = true;
                 cancelTokenSource.Token.ThrowIfCancellationRequested();
@@ -85,12 +84,8 @@ namespace PhotronWrapper.Models
                 camera = new ControlCameraBase(deviceNo); 
                 if (!camera.Init())
                 {
-                    //no code?
-                    message = camera.ErrorMessage;
-                    return Result.Error;
+                    throw new Exception("Camera Init Error: " + camera.ErrorMessage);
                 }
-
-                return Result.Completed;
             }
 
             // When camera detecting is cancelled
@@ -101,7 +96,8 @@ namespace PhotronWrapper.Models
                 {
                     Close();
                 }
-                return Result.Canceled;
+
+                throw new Exception(Result.Canceled.ToString());
             }
         }
 
@@ -124,14 +120,23 @@ namespace PhotronWrapper.Models
             cancelTokenSource.Cancel();
         }
 
+        /// <summary>
+        /// Close connection to camera if open
+        /// </summary>
         public void Close()
         {
+            string message = string.Empty;
             UInt32 ret;
             UInt32 errorCode;
             if (isOpen)
             {
-                // Close device
                 ret = PDC_CloseDevice(deviceNo, out errorCode);
+                if (ret == 0)
+                {
+                    ErrorCodes errorEnum = (ErrorCodes)errorCode;
+                    message = "PDC_OpenDeviceLV " + errorEnum.ToString();
+                    throw new Exception(message);
+                }
             }
         }
 

@@ -24,7 +24,7 @@ namespace PhotronWrapper.Models
         /// <param name="IPAdress">IP address（fixed）</param>
         /// <param name="message">message when camera detecting failed</param>
         /// <returns></returns>
-        Result DetectCamera(String IPAdress, out string message);
+        void OpenCamera(String IPAdress);
         
         /// <summary>
         /// Abort camera detecting

@@ -23,14 +23,19 @@ namespace Photron_Tester
 
         private void button1_Click(object sender, EventArgs e)
         {
-          
             string  address = "192.168.0.10";
 
             photronDevice = new PhotronCamera(address);
 
             try
             {
-                photronDevice.connectCamera();
+                var camera = photronDevice.ConnectCamera();
+                
+                if (camera != null)
+                { 
+                    //start poll for video
+                
+                }
 
 
                 String t = "";
@@ -39,11 +44,18 @@ namespace Photron_Tester
             {
                 MessageBox.Show(err.Message);
             }
-
-
-
         }
 
-
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                photronDevice.CloseCamera();
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.Message);
+            }
+        }
     }
 }
