@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 
 using System.Threading;
@@ -212,7 +214,7 @@ namespace PhotronWrapper.Models
         static extern UInt32 PDC_GetLiveImageData(UInt32 deviceNo, UInt32 childDeviceNo, UInt32 bitDepth, byte[] pBuf, out UInt32 errorCode);
 
         // Get live image 
-        public void GetLiveImageData(Resolution selectedResolution, ColorType colorType)
+        public Bitmap GetLiveImageData(Resolution selectedResolution, ColorType colorType)
         {
             UInt32 errorCode;
 
@@ -230,13 +232,31 @@ namespace PhotronWrapper.Models
                     liveImageSource.WritePixels(rect, pBuf, (int)selectedResolution.Width * 3, 0);
                 else
                     liveImageSource.WritePixels(rect, pBuf, (int)selectedResolution.Width, 0);
+
+                //convert to bitmap
+                Bitmap result = BitmapFromWriteableBitmap(liveImageSource);
+
+                return result;
             }            
         }
 
-
-        public BitmapSource LiveImageSource
+        private Bitmap BitmapFromWriteableBitmap(WriteableBitmap writeBmp)
         {
-            get { return liveImageSource; }
+           Bitmap bmp;
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create((BitmapSource)writeBmp));
+                enc.Save(outStream);
+                bmp = new System.Drawing.Bitmap(outStream);
+            }
+            return bmp;
+        }
+
+
+        public Bitmap LiveImageSource
+        {
+            get { return BitmapFromWriteableBitmap(liveImageSource); }
         }
 
         // Magnification list

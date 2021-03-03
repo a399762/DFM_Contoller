@@ -21,7 +21,7 @@ namespace PhotronWrapper
         public PhotronCamera(String ip)
         {
             IP = ip;
-            openCloseCamera = new OpenCloseCamera();
+            openCloseCamera = new OpenCloseCamera(); 
         }
 
         public IControlCamera CameraControl
@@ -32,31 +32,31 @@ namespace PhotronWrapper
         /// <summary>
         ///  Connect to the camera at the specified IP Address. 
         /// </summary>
-        /// <returns>instance of the camera if found, throws exception if not with returned c++ dll error as message</returns>
-        public IControlCamera ConnectCamera()
+        /// <returns>true of the camera if can connect, false if no heads?, throws exception if not with returned c++ dll error as message</returns>
+        public bool ConnectCamera()
         {
-            openCloseCamera.OpenCamera(IP);
-            _cameraControl = openCloseCamera.Camera;
+            
+                openCloseCamera.OpenCamera(IP);
+                _cameraControl = openCloseCamera.Camera;
 
-            if (_cameraControl.CameraHeads.Count > 0)
-            {
-                // Choose the first camera head in head list
-                selectedCameraHead = _cameraControl.CameraHeads[0];
+                if (_cameraControl.CameraHeads.Count > 0)
+                {
+                    // Choose the first camera head in head list
+                    selectedCameraHead = _cameraControl.CameraHeads[0];
 
-                // Create controller of live image and memory image
-                _controlLiveImage = new LiveImageController(selectedCameraHead.DeviceNo, selectedCameraHead.ChildNo, selectedCameraHead.ColorType);
-                _controlMemImage = new MemoryImageController(selectedCameraHead.DeviceNo, selectedCameraHead.ChildNo, selectedCameraHead.ColorType, selectedCameraHead.DeviceName);
+                    // Create controller of live image and memory image
+                    _controlLiveImage = new LiveImageController(selectedCameraHead.DeviceNo, selectedCameraHead.ChildNo, selectedCameraHead.ColorType);
+                    _controlMemImage = new MemoryImageController(selectedCameraHead.DeviceNo, selectedCameraHead.ChildNo, selectedCameraHead.ColorType, selectedCameraHead.DeviceName);
+                }
+                else
+                {
+                    return false;
+                }
 
-                Task.Factory.StartNew(RealtimeLoadImage);
-            }
-            else
-            {
-                throw new Exception("");
-            }
-
-
-            return _cameraControl;
+            return true;
         }
+
+
 
         /// <summary>
         /// call this each time you want the latest real time image, has to be called ~30/s periodically to make video
@@ -68,37 +68,17 @@ namespace PhotronWrapper
 
         public void CloseCamera()
         {
-
             openCloseCamera.Close();
-
         }
 
-        UInt32 selectedFrameRate;
-        public UInt32 SelectedFrameRate
+        public void SetRecordRate(UInt32 frameRate)
         {
-            get { return selectedFrameRate; }
-            set
-            {
-                selectedFrameRate = value;
-                try
-                {
-                    _controlLiveImage.SetRecordRate(selectedFrameRate);
-                }
-                catch (PdclibException ex)
-                {
-              
-                }
-            }
+            _controlLiveImage.SetRecordRate(frameRate);
         }
 
-        public IControlCameraHead SelectedCameraHead
+        public IList<Resolution> GetResolutionList()
         {
-            get { return selectedCameraHead; }
-            set
-            {
-                selectedCameraHead = value;
-            }
+            return _controlLiveImage.GetResolutionList();
         }
-
     }
 }

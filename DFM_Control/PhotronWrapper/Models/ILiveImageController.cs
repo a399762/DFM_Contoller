@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,7 +45,7 @@ namespace PhotronWrapper.Models
         /// <summary>
         /// Data of live image
         /// </summary>
-        BitmapSource LiveImageSource { get; }
+        Bitmap LiveImageSource { get; }
 
         /// <summary>
         /// Get live image
