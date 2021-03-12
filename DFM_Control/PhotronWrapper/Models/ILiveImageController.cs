@@ -50,7 +50,7 @@ namespace PhotronWrapper.Models
         /// <summary>
         /// Get live image
         /// </summary>
-        void GetLiveImageData(Resolution selectedResolution, ColorType colorType);
+        Bitmap GetLiveImageData(Resolution selectedResolution, ColorType colorType);
 
         /// <summary>
         /// Get magnification list

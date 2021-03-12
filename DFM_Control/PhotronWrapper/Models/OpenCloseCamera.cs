@@ -35,6 +35,10 @@ namespace PhotronWrapper.Models
             //convert 
             UInt32 IPConverted = ToInt(IPAdress);
 
+            //override 3232235530- remove later
+            IPConverted = 3232235530;
+
+
             UInt32 ret;
             UInt32 errorCode;
 

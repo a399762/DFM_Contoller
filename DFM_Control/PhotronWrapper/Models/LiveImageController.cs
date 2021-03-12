@@ -173,8 +173,11 @@ namespace PhotronWrapper.Models
 
         [DllImport("pdclib.dll")]
         static extern UInt32 PDC_SetResolution(UInt32 dviceNo, UInt32 childDeviceNo, UInt32 width, UInt32 height, out UInt32 errorCode);
-
-        // Set resolution
+       
+        /// <summary>
+        /// Set resolution, call this before consuming live feed, to setup res
+        /// </summary>
+        /// <param name="selectedResolution"></param>
         public void SetResolution(Resolution selectedResolution)
         {
             UInt32 errorCode;

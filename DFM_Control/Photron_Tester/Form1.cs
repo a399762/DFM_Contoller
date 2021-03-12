@@ -17,84 +17,67 @@ namespace Photron_Tester
     public partial class Form1 : Form
     {
         private PhotronCamera photronDevice;
-        private Resolution selectedResolution;
-
-
+   
         public Form1()
         {
             InitializeComponent();
-        }
-        CancellationTokenSource source = new CancellationTokenSource();
-        private void button1_Click(object sender, EventArgs e)
-        {
-            string  address = "192.168.0.10";
+            string address = "192.168.0.10";
 
             photronDevice = new PhotronCamera(address);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+          
+            photronDevice.OnLiveFeedNewFrame += PhotronDevice_OnLiveFeedNewFrame;
+
 
             try
             {
-                if (photronDevice.ConnectCamera())
-                {
-                    //get res list
-                    var resList = photronDevice.GetResolutionList();
+                photronDevice.CloseCamera();
+            }
+            catch (Exception)
+            {
+                String t = "'";
+            }
 
-                    selectedResolution = resList[0];
 
+            try
+            {
 
-                    //start live feed.. not sure when to stop this yet,... does it need to stop during recording?
-                    RealtimeLoadImageTask(source.Token);
-                }
-                else
-                {
-                    //report error
-                    string ft = "";
-                }
-                
+                photronDevice.ConnectCamera();
 
-                String t = "";
+                photronDevice.StartLiveFeed();
             }
             catch (Exception err)
             {
                 MessageBox.Show(err.Message);
             }
         }
-        private void RealtimeLoadImageCancellableWork(CancellationToken cancellationToken)
+
+        private void PhotronDevice_OnLiveFeedNewFrame(object sender, LiveFeedEventArgs e)
         {
-            if (cancellationToken.IsCancellationRequested)
+            //invoke this...
+            var newFrame = e.Frame;
+            SetPicture(newFrame);
+        }
+
+        private void SetPicture(Image img)
+        {
+            if (pictureBox1.InvokeRequired)
             {
-                Console.WriteLine("Cancelled work before start");
-                cancellationToken.ThrowIfCancellationRequested();
+                pictureBox1.Invoke(new MethodInvoker(
+                delegate ()
+                {
+                    pictureBox1.Image = img;
+                }));
             }
-
-            while (true)
+            else
             {
-                Thread.Sleep(1);
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
-
-                try
-                {
-                    //ask device to load image
-                    photronDevice.RealtimeLoadImage(selectedResolution);
-
-                    //image should now be loaded in 
-                }
-                catch (PdclibException ex)
-                {
-
-                }
-
+                pictureBox1.Image = img;
             }
         }
 
-        public Task RealtimeLoadImageTask(CancellationToken ct)
-        {
-            return Task.Factory.StartNew(() => RealtimeLoadImageCancellableWork(ct), ct);
-        }
-
-      
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -106,6 +89,36 @@ namespace Photron_Tester
             {
                 MessageBox.Show(err.Message);
             }
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void focalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void darkCurrentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void illuminationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dimensionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

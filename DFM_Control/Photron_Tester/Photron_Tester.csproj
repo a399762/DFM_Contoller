@@ -66,6 +66,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -85,6 +86,21 @@
       <Project>{01b168b9-d0eb-4852-b43e-c5eebb73a341}</Project>
       <Name>PhotronWrapper</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\length-icon-17.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\kisspng-computer-icons-dimension-icon-design-surface-icon-5b50a2847f1503.0135639315320111405205.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\spotlight-technology-illumination-icon-with-png-and-vector-348342.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icons\clipart1547719.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
