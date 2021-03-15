@@ -43,11 +43,6 @@ namespace PhotronWrapper.Models
         void SetResolution(Resolution selectedResolution);
 
         /// <summary>
-        /// Data of live image
-        /// </summary>
-        Bitmap LiveImageSource { get; }
-
-        /// <summary>
         /// Get live image
         /// </summary>
         Bitmap GetLiveImageData(Resolution selectedResolution, ColorType colorType);
@@ -71,7 +66,7 @@ namespace PhotronWrapper.Models
         /// Get recording status
         /// </summary>
         /// <returns>recording status:"LIVE", "RECORD READY", "RECORDING"</returns>
-        string GetStatus();
+        CameraStatus GetStatus();
 
     }
 }

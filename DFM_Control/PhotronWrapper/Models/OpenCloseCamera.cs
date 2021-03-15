@@ -1,4 +1,5 @@
 ﻿using PhotronWrapper.Enums;
+using PhotronWrapper.Helpers;
 using System;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -33,11 +34,7 @@ namespace PhotronWrapper.Models
         public void OpenCamera(String IPAdress)
         {
             //convert 
-            UInt32 IPConverted = ToInt(IPAdress);
-
-            //override 3232235530- remove later
-            IPConverted = 3232235530;
-
+            UInt32 IPConverted = Networking.IPToInt(IPAdress);
 
             UInt32 ret;
             UInt32 errorCode;

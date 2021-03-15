@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Media.Imaging;
 
 namespace PhotronWrapper.Models
@@ -18,12 +19,7 @@ namespace PhotronWrapper.Models
         /// <summary>
         /// Get memory image
         /// </summary>
-        void GetMemImageData(int frameNo);
-
-        /// <summary>
-        /// Data of memory image
-        /// </summary>
-        BitmapSource MemImageSource {get;}
+        Bitmap GetMemImageData(int frameNo);
 
         /// <summary>
         /// Save image file

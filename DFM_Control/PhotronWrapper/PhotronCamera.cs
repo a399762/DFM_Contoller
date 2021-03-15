@@ -22,7 +22,6 @@ namespace PhotronWrapper
      
         private Resolution selectedResolution;
         private UInt32 selectedFrameRate;
-
         IList<UInt32> shutterSpeedList;
         IList<Resolution> resolutionList;
 
@@ -30,18 +29,31 @@ namespace PhotronWrapper
        
         private String IP = String.Empty;
     
-        public PhotronCamera(String ip)
+        public PhotronCamera()
         {
-            IP = ip;
-            openCloseCamera = new OpenCloseCamera(); 
+         
         }
 
         /// <summary>
         ///  Connect to the camera at the specified IP Address. 
         /// </summary>
         /// <returns>true of the camera if can connect, false if no heads?, throws exception if not with returned c++ dll error as message</returns>
-        public void ConnectCamera()
+        public void ConnectCamera(String ip)
         {
+
+            this.IP = ip;
+
+            //make sure if we have a connection,,.. to close it.
+            try
+            {
+                CloseCamera();
+            }
+            catch (Exception)
+            {  
+            }
+
+
+            openCloseCamera = new OpenCloseCamera();
             openCloseCamera.OpenCamera(IP);
             cameraControl = openCloseCamera.Camera;
 
@@ -88,7 +100,7 @@ namespace PhotronWrapper
 
             while (true)
             {
-                Thread.Sleep(1);
+                Thread.Sleep(10);
                 if (cancellationToken.IsCancellationRequested)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -122,12 +134,7 @@ namespace PhotronWrapper
         /// </summary>
         public void StartLiveFeed()
         {
-            //clean up if we are already doing this...
-            if(liveFeedCancellationTokenSource != null)
-                StopLiveFeed();
-
             liveFeedCancellationTokenSource = new CancellationTokenSource();
-
             Task.Factory.StartNew(() => RealtimeLoadImageCancellableWork(liveFeedCancellationTokenSource.Token), liveFeedCancellationTokenSource.Token);
             return;
         }
@@ -146,9 +153,7 @@ namespace PhotronWrapper
 
         public void CloseCamera()
         {
-            //should this be here,.. should there also  be a delay after?
-            //StopLiveFeed();
-
+            StopLiveFeed();
             openCloseCamera.Close();
         }
 
@@ -161,6 +166,48 @@ namespace PhotronWrapper
         {
             return controlLiveImage.GetResolutionList();
         }
+
+        public void StartRecording()
+        {
+            controlLiveImage.RecordStart();
+        }
+
+        public void StopRecording()
+        {
+            controlLiveImage.RecordStop();
+        }
+
+        public void GetCameraVideoMemoryStatus()
+        {
+            //make an complex object to return all this data?
+            controlMemImage.GetMemImageInfo();
+            //TotalFrameNo,RecordRate,RecordShutterSpeed,RecordResolution should be available now
+
+            //// Show the first frame of memory images in initial status 
+            //controlMemImage.GetMemImageData(controlMemImage.FrameInfo.m_nStart);
+           
+            
+            //RaisePropertyChanged(() => MemImageSource);
+
+            //startFrameNo = (UInt32)_controlMemImage.FrameInfo.m_nStart;
+            //RaisePropertyChanged(() => StartFrameNo);
+
+            //currentFrameNo = (UInt32)_controlMemImage.FrameInfo.m_nStart;
+            //RaisePropertyChanged(() => CurrentFrameNo);
+
+            //endFrameNo = (UInt32)_controlMemImage.FrameInfo.m_nEnd;
+            //RaisePropertyChanged(() => EndFrameNo);
+
+            //// Set the range of file saving to all frames in initial status
+            //saveFileStartFrameNo = _controlMemImage.FrameInfo.m_nStart;
+            //RaisePropertyChanged(() => SaveFileStartFrameNo);
+
+            //saveFileEndFrameNo = _controlMemImage.FrameInfo.m_nEnd;
+            //RaisePropertyChanged(() => SaveFileEndFrameNo);
+
+        }
+
+
     }
 
     public class LiveFeedEventArgs : EventArgs

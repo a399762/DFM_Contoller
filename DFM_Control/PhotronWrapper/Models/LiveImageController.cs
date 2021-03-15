@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PhotronWrapper.Enums;
+using PhotronWrapper.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -60,8 +62,8 @@ namespace PhotronWrapper.Models
             UInt32 ret = PDC_GetRecordRateList(_deviceNo, _childNo, out count, frameRate, out errorCode);
             if (ret == 0)
             {
-                var ex = new PdclibException("PDC_GetRecordRateList " + errorCode.ToString());
-                throw ex;
+                ErrorCodes errorEnum = (ErrorCodes)errorCode;
+                throw new Exception("PDC_GetRecordRateList: " + errorEnum);
             }
 
             // Create list
@@ -109,8 +111,8 @@ namespace PhotronWrapper.Models
             UInt32 ret = PDC_GetShutterSpeedFpsList(_deviceNo, _childNo, out count, shutterSpeed, out errorCode);
             if (ret == 0)
             {
-                var ex = new PdclibException("PDC_GetShutterSpeedFpsList " + errorCode.ToString());
-                throw ex;
+                ErrorCodes errorEnum = (ErrorCodes)errorCode;
+                throw new Exception("PDC_GetShutterSpeedFpsList: " + errorEnum);
             }
 
             // Create list
@@ -136,8 +138,8 @@ namespace PhotronWrapper.Models
             UInt32 ret = PDC_SetShutterSpeedFps(_deviceNo, _childNo, selectedShutterSpeed, out errorCode);
             if (ret == 0)
             {
-                var ex = new PdclibException("PDC_SetShutterSpeedFps " + errorCode.ToString());
-                throw ex;
+                ErrorCodes errorEnum = (ErrorCodes)errorCode;
+                throw new Exception("PDC_SetShutterSpeedFps: " + errorEnum);
             }
         }
         
@@ -156,8 +158,8 @@ namespace PhotronWrapper.Models
             UInt32 ret = PDC_GetResolutionList(_deviceNo, _childNo, out count, resolution, out errorCode);
             if (ret == 0)
             {
-                var ex = new PdclibException("PDC_GetResolutionList " + errorCode.ToString());
-                throw ex;
+                ErrorCodes errorEnum = (ErrorCodes)errorCode;
+                throw new Exception("PDC_GetResolutionList: " + errorEnum);
             }
             
             // Create list
@@ -186,8 +188,8 @@ namespace PhotronWrapper.Models
             UInt32 ret = PDC_SetResolution(_deviceNo, _childNo, selectedResolution.Width, selectedResolution.Height, out errorCode);
             if (ret == 0)
             {
-                var ex = new PdclibException("PDC_SetResolution " + errorCode.ToString());
-                throw ex;
+                ErrorCodes errorEnum = (ErrorCodes)errorCode;
+                throw new Exception("PDC_SetResolution: " + errorEnum);
             }
 
             // Prepare image buffer according to color type and resolution
@@ -225,8 +227,8 @@ namespace PhotronWrapper.Models
             UInt32 ret = PDC_GetLiveImageData(_deviceNo, _childNo, 8, pBuf, out errorCode);
             if (ret == 0)
             {
-                var ex = new PdclibException("PDC_GetLiveImageData " + errorCode.ToString());
-                throw ex;
+                ErrorCodes errorEnum = (ErrorCodes)errorCode;
+                throw new Exception("PDC_GetLiveImageData: " + errorEnum);
             }
             else
             {
@@ -237,30 +239,13 @@ namespace PhotronWrapper.Models
                     liveImageSource.WritePixels(rect, pBuf, (int)selectedResolution.Width, 0);
 
                 //convert to bitmap
-                Bitmap result = BitmapFromWriteableBitmap(liveImageSource);
+                Bitmap result =Imaging.BitmapFromWriteableBitmap(liveImageSource);
 
                 return result;
             }            
         }
 
-        private Bitmap BitmapFromWriteableBitmap(WriteableBitmap writeBmp)
-        {
-           Bitmap bmp;
-            using (MemoryStream outStream = new MemoryStream())
-            {
-                BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create((BitmapSource)writeBmp));
-                enc.Save(outStream);
-                bmp = new System.Drawing.Bitmap(outStream);
-            }
-            return bmp;
-        }
-
-
-        public Bitmap LiveImageSource
-        {
-            get { return BitmapFromWriteableBitmap(liveImageSource); }
-        }
+       
 
         // Magnification list
         List<Magnification> magnificationList = new List<Magnification>() 
@@ -303,8 +288,8 @@ namespace PhotronWrapper.Models
             UInt32 ret = PDC_SetRecReady(_deviceNo, out errorCode);
             if (ret == 0)
             {
-                var ex = new PdclibException("PDC_SetRecReady " + errorCode.ToString());
-                throw ex;
+                ErrorCodes errorEnum = (ErrorCodes)errorCode;
+                throw new Exception("PDC_SetRecReady: " + errorEnum);
             }
 
             while (true)
@@ -313,8 +298,8 @@ namespace PhotronWrapper.Models
                 ret = PDC_GetStatus(_deviceNo, out status, out errorCode);
                 if (ret == 0)
                 {
-                    var ex = new PdclibException("PDC_GetStatus " + errorCode.ToString());
-                    throw ex;
+                    ErrorCodes errorEnum = (ErrorCodes)errorCode;
+                    throw new Exception("PDC_GetStatus: " + errorEnum);
                 }
 
                 if (status == (uint)CameraStatus.PDC_STATUS_RECREADY || status == (uint)CameraStatus.PDC_STATUS_REC)
@@ -326,15 +311,13 @@ namespace PhotronWrapper.Models
             ret = PDC_TriggerIn(_deviceNo, out errorCode);
             if (ret == 0)
             {
-                var ex = new PdclibException("PDC_TriggerIn " + errorCode.ToString());
-                throw ex;
+                ErrorCodes errorEnum = (ErrorCodes)errorCode;
+                throw new Exception("PDC_TriggerIn: " + errorEnum);
             }
-
-
         }
 
         // Get recording status (Execute in different thread from UI）
-        public string GetStatus()
+        public CameraStatus GetStatus()
         {
             string cameraStatus;
             UInt32 status;
@@ -344,19 +327,11 @@ namespace PhotronWrapper.Models
             UInt32 ret = PDC_GetStatus(_deviceNo, out status, out errorCode);
             if (ret == 0)
             {
-                var ex = new PdclibException("PDC_GetStatus " + errorCode.ToString());
-                throw ex;
+                ErrorCodes errorEnum = (ErrorCodes)errorCode;
+                throw new Exception("PDC_GetStatus: " + errorEnum);
             }
 
-            if (status == (uint)CameraStatus.PDC_STATUS_RECREADY)
-                cameraStatus = "RECORD READY";
-            else if (status == (uint)CameraStatus.PDC_STATUS_REC)
-                cameraStatus = "RECORDING";
-            else
-                cameraStatus = "LIVE";
-
-            return cameraStatus;
-            
+            return (CameraStatus)ret;
         }
 
         
@@ -369,8 +344,8 @@ namespace PhotronWrapper.Models
             UInt32 ret = PDC_SetStatus(_deviceNo, (uint)CameraStatus.PDC_STATUS_LIVE, out errorCode);
             if (ret == 0)
             {
-                var ex = new PdclibException("PDC_SetStatus " + errorCode.ToString());
-                throw ex;
+                ErrorCodes errorEnum = (ErrorCodes)errorCode;
+                throw new Exception("PDC_SetStatus: " + errorEnum);
             }
         }
     }

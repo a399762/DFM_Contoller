@@ -10,6 +10,8 @@ using System.Threading;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Media;
+using System.Drawing;
+using PhotronWrapper.Helpers;
 
 namespace PhotronWrapper.Models
 {
@@ -159,7 +161,7 @@ namespace PhotronWrapper.Models
 
 
         // Get image data for playback (Execute in different thread from UI)
-        public void GetMemImageData(int frameNo)
+        public Bitmap GetMemImageData(int frameNo)
         {
             UInt32 errorCode;
 
@@ -177,7 +179,10 @@ namespace PhotronWrapper.Models
                     memImageSource.WritePixels(rect, pBuf, (int)recordResolution.Width * 3, 0);
                 else
                     memImageSource.WritePixels(rect, pBuf, (int)recordResolution.Width, 0);
-
+              
+                //convert to bitmap
+                Bitmap result =Imaging.BitmapFromWriteableBitmap(memImageSource);
+                return result;
             }
         }
 
@@ -211,10 +216,8 @@ namespace PhotronWrapper.Models
             cancelTokenSource = new CancellationTokenSource();
 
             // Execute in other thread 
-            Task.Factory.StartNew(() =>
-                {
-                // MRAWFileSave(obj, cancelTokenSource.Token);
-                });
+            MRAWFileSave(obj, cancelTokenSource.Token);
+               
         }
 
         // Cancel file saving
@@ -409,7 +412,7 @@ namespace PhotronWrapper.Models
 
                 try
                 {
-                  //  cihFileSave(cihFileName, (int)objTmp[1], (int)objTmp[2], savingFileWindow);
+                    cihFileSave(cihFileName, (int)objTmp[1], (int)objTmp[2]);
 
                     // Close savingFileWindow when file saving is finished
                     //DispatcherHelper.UIDispatcher.Invoke(() =>
